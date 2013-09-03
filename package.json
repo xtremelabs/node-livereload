@@ -1,32 +1,49 @@
-{ "name": "livereload"
-, "description": "LiveReload server"
-, "version": "0.3.1"
-, "contributors": [
-    { "name": "Joshua Peek" }
-  , { "name": "Brian P. Hogan", "email": "brianhogan@napcs.com" }
-  ]
-, "licenses": [
-  { "type": "MIT"
-  , "url": "https://github.com/napcs/node-livereload/blob/master/LICENSE"
-  }]
-, "repository":
-  { "type": "git"
-  , "url": "http://github.com/napcs/node-livereload.git"
-  }
-, "bin": { "livereload": "./bin/livereload.js" }
-, "main": "./lib/livereload.js"
-, "dependencies": {
+{
+  "name": "livereload",
+  "description": "LiveReload server",
+  "version": "0.3.1",
+  "contributors": [
+    {
+      "name": "Joshua Peek"
+    },
+    {
+      "name": "Brian P. Hogan",
+      "email": "brianhogan@napcs.com"
+    },
+    {
+      "name" : "Topher Bullock",
+      "email" : "topher.bullock@xtremelabs.com"
+    }
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/napcs/node-livereload/blob/master/LICENSE"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/napcs/node-livereload.git"
+  },
+  "bin": {
+    "livereload": "./bin/livereload.js"
+  },
+  "main": "./lib/livereload.js",
+  "dependencies": {
     "opts": ">= 1.2.0",
-    "websocket.io": ">= 0.1.0"
-  }
-, "devDependencies": {
+    "websocket.io": ">= 0.1.0",
+    "gaze": "~0.4.1"
+  },
+  "devDependencies": {
     "request": ">= 2.9.203",
     "should": ">= 0.6.3",
     "ws": ">= 0.4.20",
     "mocha": ">= 1.0.3"
-  }
-, "engines" : { "node" : ">=0.4.0" }
-, "scripts": {
+  },
+  "engines": {
+    "node": ">=0.4.0"
+  },
+  "scripts": {
     "test": "mocha"
   }
 }

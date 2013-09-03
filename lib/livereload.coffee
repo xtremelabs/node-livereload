@@ -3,6 +3,7 @@ path = require 'path'
 ws   = require 'websocket.io'
 http  = require 'http'
 url = require 'url'
+gaze = require 'gaze'
 
 version = '1.6'
 defaultPort = 35729
@@ -15,20 +16,19 @@ defaultExts = [
 defaultExclusions = [/\.git\//, /\.svn\//, /\.hg\//]
 
 class Server
-  constructor: (@config) ->
-    @config ?= {}
+  constructor: (@config = {}) ->
+    
+    @config.version ||= version
+    @config.port    ||= defaultPort
 
-    @config.version ?= version
-    @config.port    ?= defaultPort
-
-    @config.exts       ?= []
-    @config.exclusions ?= []
+    @config.exts       ||= []
+    @config.exclusions ||= []
 
     @config.exts       = @config.exts.concat defaultExts
     @config.exclusions = @config.exclusions.concat defaultExclusions
 
-    @config.applyJSLive  ?= false
-    @config.applyCSSLive ?= true
+    @config.applyJSLive  ||= false
+    @config.applyCSSLive ||= true
 
     @sockets = []
     
@@ -57,36 +57,16 @@ class Server
   onClose: (socket) ->
     @debug "Browser disconnected."
 
-  walkTree: (dirname, callback) ->
-    exts       = @config.exts
-    exclusions = @config.exclusions
 
-    walk = (dirname) ->
-      fs.readdir dirname, (err, files) ->
-        if err then return callback err
+  watch: (path, files = ["css/**", "js/**", "templates/**", "**/*.html"]) ->    
+    _this = @;
 
-        files.forEach (file) ->
-          filename = path.join dirname, file
-
-          for exclusion in exclusions
-            return if filename.match exclusion
-
-          fs.stat filename, (err, stats) ->
-            if !err and stats.isDirectory()
-              walk filename
-            else
-              for ext in exts when filename.match "\.#{ext}$"
-                callback err, filename
-                break
-
-    walk dirname, callback
-
-  watch: (dirname) ->
-    @walkTree dirname, (err, filename) =>
-      throw err if err
-      fs.watchFile filename, (curr, prev) =>
-        if curr.mtime > prev.mtime
-          @refresh filename
+    gaze files, ->  
+      this.on "all", (event, filepath) ->
+        console.log ".", filepath.substr(process.cwd().length) , "was ", event
+        _this.refresh filepath
+        return
+      return
 
   refresh: (path) ->
     @debug "Refresh: #{path}"
